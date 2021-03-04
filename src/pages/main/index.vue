@@ -27,6 +27,7 @@
         height: 100%;
         background-image: url("../../assets/zjm.jpg");
         background-repeat: no-repeat;
+        background-size: 100% 100%;
         /*padding-top: 50px;*/
         box-sizing: border-box;
         .header{

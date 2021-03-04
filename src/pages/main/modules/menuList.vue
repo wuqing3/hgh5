@@ -14,7 +14,7 @@
             <van-grid-item icon="photo-o">
                 <van-image src="" width="45" height="45" >
                 </van-image>
-                <span class="des">等待开发</span>
+                <span class="des"></span>
             </van-grid-item>
         </van-grid>
     </div>
@@ -28,7 +28,7 @@
         methods:{
             scanQrCode(){
                 if("undefined"===typeof(app_form)) {
-                    this.func_qrcode("379937805188464640");
+                    this.func_qrcode("369087579619852288");
 
                     return;
                 }
@@ -39,7 +39,9 @@
                     path:'/history',
                 })
             },
+
             func_qrcode(id){
+                id = "369087579619852288"
                 if(!id){
                     Toast.fail("获取失败")
                 }else{

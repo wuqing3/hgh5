@@ -78,7 +78,14 @@
                 </template>
             </van-field>
         </div>
-        <div style="margin: 16px;">
+
+
+        <div style="margin:20px 16px;">
+<!--            /type="file" accept="image/*" capture="camera"-->
+            <van-button block size="large"  native-type="file" icon="photograph" type="info" style="height: 80px;" @click="takePhoto">拍照</van-button>
+        </div>
+
+        <div style="margin: 16px;position: absolute;bottom: 0">
             <van-button icon="arrow-left" type="warning" style="margin-right: 20px;width: 100px" @click="back">返回</van-button>
             <van-button icon="success" type="info" style="width: 100px" @click="onSubmit">提交</van-button>
         </div>
@@ -170,6 +177,7 @@
                     }
                 })
             },
+
             scanJobNumber(){
                 if("undefined"===typeof(app_form)) {
                     this.func_qrcode("10001");
@@ -238,13 +246,27 @@
 
 
 
+            },
+            takePhoto(){
+                if("undefined" === typeof(app_form)){
+                    this.func_photo();
+                    return
+                }
+                console.log(app_form)
+                // app_form.func_ui_showInputDialog();
+                app_form.func_media_takePhoto();
+            },
+            func_photo(x) {
+                console.log(x)
             }
         },
         mounted(){
             let id = this.$route.query.id;
             this.getProcessById(id)
             this.getProductList(id);
+
             window.func_qrcode = this.func_qrcode;
+            window.func_photo = this.func_photo;
         }
     }
 </script>
