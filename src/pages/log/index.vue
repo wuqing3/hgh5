@@ -33,6 +33,17 @@
                 </template>
             </van-field>
             <van-field
+                    readonly
+                    label-width="100"
+            >
+                <template #label>
+                    <span class="product-label">箱子号码</span>
+                </template>
+                <template #input>
+                    {{boxNumber}}
+                </template>
+            </van-field>
+            <van-field
                 readonly
                 label-width="100"
             >
@@ -184,14 +195,12 @@
                 let formData = new FormData()
                 formData.append('file',file)
 
-
             },
             getProcessById(id){
                 let param = {
                     id:id
                 }
                 this.$api.getProcessById(param).then(res=>{
-                    console.log(res);
                     if(res.data){
                         this.processInfo = res.data
                     }
@@ -217,6 +226,7 @@
             },
 
             insert(){
+                let boxNumber = this.$route.query.boxNumber;
                 let param = {
                     "empId": this.userInfo.id,
                     jobNo:this.jobNo,
@@ -226,7 +236,8 @@
                     "productId":  this.productList[this.index].id,
                     "productName":  this.productList[this.index].productName,
                     "reportNum": this.number,
-                     processTime:this.processTimeS[this.index]
+                    boxNumber,
+                    processTime:this.processTimeS[this.index]
                 }
 
                 this.$api.insert(param).then(res=>{
@@ -288,6 +299,10 @@
         },
         mounted(){
             let id = this.$route.query.id;
+            this.boxNumber = this.$route.query.boxNumber;
+
+
+
             this.getProcessById(id)
             this.getProductList(id);
 
