@@ -82,12 +82,20 @@
 
         <div style="margin:20px 16px;">
 <!--            /type="file" accept="image/*" capture="camera"-->
-            <van-button block size="large"  native-type="file" icon="photograph" type="info" style="height: 80px;" @click="takePhoto">拍照</van-button>
+
+            <van-image
+                    width="160"
+                    height="100"
+                    :src="src"
+            />
+
         </div>
 
-        <div style="margin: 16px;position: absolute;bottom: 0">
-            <van-button icon="arrow-left" type="warning" style="margin-right: 20px;width: 100px" @click="back">返回</van-button>
+        <div style="margin: 16px;position: absolute;bottom: 0;display: flex; justify-content: space-between;width:calc(100% - 42px);">
+            <van-button icon="arrow-left" type="warning" style="width: 100px" @click="back">返回</van-button>
             <van-button icon="success" type="info" style="width: 100px" @click="onSubmit">提交</van-button>
+            <van-button v-if="photoStatus" icon="photograph" type="primary" style="width:100px;" @click="takePhoto">拍照</van-button>
+            <van-button v-if="!photoStatus" plain icon="upgrade" type="primary" style="width:100px;" @click="uploadPics">上传</van-button>
         </div>
         <van-popup v-model="showPicker" position="bottom"  round :style="{height:'60%'}">
             <van-picker
@@ -112,6 +120,9 @@
                 username:'',
                 password:'',
                 showPicker:false,
+                photoStatus:true,
+                src:'',
+                jpgName:'',
 
                 index:0,
                 mode: 'selector',
@@ -161,7 +172,20 @@
                 this.index = index;
                 this.showPicker = false;
             },
+            uploadPics(){
+                let bstr = atob(this.src.split(',')[1]);
+                let n = bstr.length;
+                let u8arr = new Uint8Array(n);
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
 
+                let file= new File([u8arr],jpgName,{type:'image/jpg'});
+                let formData = new FormData()
+                formData.append('file',file)
+
+
+            },
             getProcessById(id){
                 let param = {
                     id:id
@@ -253,11 +277,13 @@
                     return
                 }
                 console.log(app_form)
-                // app_form.func_ui_showInputDialog();
-                app_form.func_media_takePhoto();
+                let jpgName = new Date().getTime() +'.jpg';
+                this.jpgName = jpgName;
+                app_form.func_media_takePhoto(jpgName);
             },
-            func_photo(x) {
-                console.log(x)
+            func_photo(x,y,z) {
+                this.src = x + y;
+                this.photoStatus = false;
             }
         },
         mounted(){
