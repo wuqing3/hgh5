@@ -43,7 +43,7 @@
             func_qrcode(code){
                 code = "369087579619852288#3"
                 let id = code.split('#')[0];
-                let boxNumber = code.split('#')[1];
+                let boxCode = code.split('#')[1];
 
                 if(!id){
                     Toast.fail("获取失败");
@@ -52,7 +52,7 @@
                         path:'/logs',
                         query:{
                             id,
-                            boxNumber
+                            boxCode
                         }
                     })
                 }

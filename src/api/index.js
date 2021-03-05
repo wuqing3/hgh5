@@ -14,6 +14,27 @@ instance.interceptors.response.use(function (response) {
     return Promise.reject(error);
 });
 
+const upload = (url,params,method='post') => {
+    return new Promise((resolve, reject) => {
+        instance({
+            url,
+            method,
+            data:params,
+            headers:{
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
+            if(res.code == '200'){
+                resolve(res)
+            }else{
+                Toast.fail(res.mesg);
+            }
+        }).catch(err => {
+            Toast.fail(err);
+            reject(err);
+        })
+    })
+}
 
 const fetch = (ourl,params,methods='post') => {
 
@@ -63,4 +84,7 @@ export default {
     listByEmpId(param={}){
         return fetch('/open/rep/listByEmpId',param,)
     },
+    uploadPic(param){
+        return upload('/open/upload/pic',param,);
+    }
 }
