@@ -66,7 +66,7 @@
                 </template>
             </van-field>
         </div>
-        <div class="form" style="margin-top: 15px;">
+        <div class="form" style="margin-top: 10px;">
             <van-field
                     name="productName"
                     label-width="100"
@@ -91,26 +91,27 @@
         </div>
 
 
-        <div style="margin:20px 16px;">
+        <div style="margin:10px 15px;">
 <!--            /type="file" accept="image/*" capture="camera"-->
-
             <van-image
-                    width="160"
-                    height="100"
+                    v-if="!photoStatus"
+                    width="120"
+                    height="60"
                     :src="src"
+                    @click="showPreview"
             />
+
 
         </div>
 
-        <div style="margin: 16px;position: absolute;bottom: 0;display: flex; justify-content: space-between;width:calc(100% - 42px);">
-            <van-button icon="arrow-left" type="warning" style="width: 100px" @click="back">返回</van-button>
-            <van-button icon="success" type="info" style="width: 100px" @click="onSubmit">提交</van-button>
-            <van-button v-if="photoStatus" icon="photograph" type="primary" style="width:100px;" @click="takePhoto">拍照</van-button>
-            <van-button v-if="!photoStatus" plain icon="upgrade" type="primary" style="width:100px;" @click="uploadPics">上传</van-button>
+        <div style="margin: 10px;position: absolute;bottom: 0;display: flex; justify-content: space-between;width:calc(100% - 30px);">
+            <van-button icon="arrow-left" type="warning" style="width: 90px" @click="back">返回</van-button>
+            <van-button icon="success" type="info" style="width: 90px" @click="onSubmit">提交</van-button>
+            <van-button v-if="photoStatus" icon="photograph" type="primary" style="width:90px;" @click="takePhoto">拍照</van-button>
+            <van-button v-if="!photoStatus" plain icon="upgrade" type="primary" style="width:90px;" @click="uploadPics">上传</van-button>
         </div>
         <van-popup v-model="showPicker" position="bottom"  round :style="{height:'60%'}">
             <van-picker
-
                     show-toolbar
                     :columns="productNames"
                     @confirm="onConfirm"
@@ -122,8 +123,7 @@
 </template>
 
 <script>
-    import {Toast} from 'vant'
-    import { Dialog } from 'vant';
+    import { Dialog,Toast,ImagePreview } from 'vant';
     export default {
         name: "index",
         data(){
@@ -165,6 +165,12 @@
             back(){
                 this.$router.go(-1)
             },
+            showPreview(){
+                ImagePreview([this.src])
+            },
+
+
+
             getProductList(id){
                 this.$api.getProductByProcessId({processId:id}).then(res=>{
                     console.log(res)
@@ -194,6 +200,8 @@
                 let file= new File([u8arr],jpgName,{type:'image/jpg'});
                 let formData = new FormData()
                 formData.append('file',file)
+
+
 
             },
             getProcessById(id){
@@ -319,8 +327,8 @@
         padding: 0px 5px;
         .title{
             margin: 20px;
-            height: 40px;
-            line-height: 40px;
+            height: 30px;
+            line-height: 30px;
             font-weight: 700;
             font-size: 24px;
 
