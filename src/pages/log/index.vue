@@ -106,8 +106,8 @@
         <div style="margin:16px 10px;position: absolute;bottom: 0;display: flex; justify-content: space-between;width:calc(100% - 30px);">
             <van-button icon="arrow-left" type="warning" style="width: 90px" @click="back">返回</van-button>
             <van-button icon="success" type="info" style="width: 90px" @click="onSubmit">提交</van-button>
-            <van-button v-if="photoStatus" icon="photograph" type="primary" style="width:90px;" @click="takePhoto">拍照</van-button>
-            <van-button v-if="!photoStatus" plain icon="upgrade" type="primary" style="width:90px;" @click="uploadPics">上传</van-button>
+            <van-button icon="photograph" type="primary" style="width:90px;" @click="takePhoto">拍照</van-button>
+            <!--<van-button v-if="!photoStatus" plain icon="upgrade" type="primary" style="width:90px;" @click="uploadPics">上传</van-button>-->
         </div>
         <van-popup v-model="showPicker" position="bottom"  round :style="{height:'60%'}">
             <van-picker
@@ -205,6 +205,7 @@
                 this.$api.uploadPic(formData).then(res => {
                     this.picSrc = res.data;
                     Toast.success(res.msg);
+                    this.deletePics();
                 }).catch(err => {
                     Toast.fail(err);
                 })
@@ -222,6 +223,13 @@
                          this.$router.go(-1)
                     }
                 })
+            },
+
+            deletePics(){
+                if("undefined" === typeof(app_form)){
+                    return
+                }
+                console.log(app_form.func_delete_pic(this.jpgName));
             },
 
             scanJobNumber(){
@@ -310,9 +318,11 @@
                 this.jpgName = jpgName;
                 app_form.func_media_takePhoto(jpgName);
             },
+
             func_photo(x,y,z) {
                 this.src = x + y;
                 this.photoStatus = false;
+                this.uploadPics();
             }
         },
         mounted(){
