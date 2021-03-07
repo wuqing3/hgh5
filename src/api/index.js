@@ -86,5 +86,9 @@ export default {
     },
     uploadPic(param){
         return upload('/open/upload/pic',param,);
+    },
+    //判断盒子是否被使用
+    isBoxUse(param){
+        return fetch('/open/rep/isBoxUse',param,'get');
     }
 }
