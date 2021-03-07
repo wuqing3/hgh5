@@ -40,7 +40,7 @@
                     <span class="product-label">箱子号码</span>
                 </template>
                 <template #input>
-                    {{boxNumber}}
+                    {{boxCode}}
                 </template>
             </van-field>
             <van-field
@@ -91,8 +91,8 @@
         </div>
 
 
-        <div style="margin:10px 15px;">
-<!--            /type="file" accept="image/*" capture="camera"-->
+        <div style="margin:10px 16px;">
+
             <van-image
                     v-if="!photoStatus"
                     width="120"
@@ -101,10 +101,9 @@
                     @click="showPreview"
             />
 
-
         </div>
 
-        <div style="margin: 10px;position: absolute;bottom: 0;display: flex; justify-content: space-between;width:calc(100% - 30px);">
+        <div style="margin:16px 10px;position: absolute;bottom: 0;display: flex; justify-content: space-between;width:calc(100% - 30px);">
             <van-button icon="arrow-left" type="warning" style="width: 90px" @click="back">返回</van-button>
             <van-button icon="success" type="info" style="width: 90px" @click="onSubmit">提交</van-button>
             <van-button v-if="photoStatus" icon="photograph" type="primary" style="width:90px;" @click="takePhoto">拍照</van-button>
@@ -112,6 +111,7 @@
         </div>
         <van-popup v-model="showPicker" position="bottom"  round :style="{height:'60%'}">
             <van-picker
+
                     show-toolbar
                     :columns="productNames"
                     @confirm="onConfirm"
@@ -132,7 +132,9 @@
                 password:'',
                 showPicker:false,
                 photoStatus:true,
+                boxCode:'',
                 src:'',
+                picSrc:'',
                 jpgName:'',
 
                 index:0,
@@ -197,12 +199,15 @@
                     u8arr[n] = bstr.charCodeAt(n);
                 }
 
-                let file= new File([u8arr],jpgName,{type:'image/jpg'});
-                let formData = new FormData()
-                formData.append('file',file)
-
-
-
+                let file= new File([u8arr],this.jpgName,{type:'image/jpg'});
+                let formData = new FormData();
+                formData.append('file',file);
+                this.$api.uploadPic(formData).then(res => {
+                    this.picSrc = res.data;
+                    Toast.success(res.msg);
+                }).catch(err => {
+                    Toast.fail(err);
+                })
             },
             getProcessById(id){
                 let param = {
@@ -234,7 +239,7 @@
             },
 
             insert(){
-                let boxNumber = this.$route.query.boxNumber;
+
                 let param = {
                     "empId": this.userInfo.id,
                     jobNo:this.jobNo,
@@ -244,10 +249,10 @@
                     "productId":  this.productList[this.index].id,
                     "productName":  this.productList[this.index].productName,
                     "reportNum": this.number,
-                    boxNumber,
+                    boxCode:this.boxCode,
+                    pic:this.picSrc,
                     processTime:this.processTimeS[this.index]
                 }
-
                 this.$api.insert(param).then(res=>{
                     Toast.success("填报成功！");
                     this.$router.go(-1)
@@ -270,6 +275,10 @@
                 })
             },
             onSubmit(){
+                if(this.picSrc===''){
+                    Toast.fail('请上传图片')
+                    return
+                }
                 if(this.jobNo == ''){
                     Toast.fail("填写工号!");
                     return false;
@@ -278,6 +287,7 @@
                     Toast.fail('请填写报工数量')
                     return
                 }
+
                 Dialog.confirm({
                     title:'',
                     message:'确认提交报工吗？'
@@ -307,9 +317,7 @@
         },
         mounted(){
             let id = this.$route.query.id;
-            this.boxNumber = this.$route.query.boxNumber;
-
-
+            this.boxCode = this.$route.query.boxCode;
 
             this.getProcessById(id)
             this.getProductList(id);
@@ -341,7 +349,7 @@
 
         }
         .van-cell{
-            padding: 10px;
+            padding: 8px;
             /deep/ .van-field__button{
                 line-height: 1;
             }

@@ -28,7 +28,7 @@
         methods:{
             scanQrCode(){
                 if("undefined"===typeof(app_form)) {
-                    this.func_qrcode("369087579619852288");
+                    this.func_qrcode("");
 
                     return;
                 }
@@ -41,21 +41,34 @@
             },
 
             func_qrcode(code){
-                code = "369087579619852288#3"
+                // code = "369087579619852288#3"
                 let id = code.split('#')[0];
-                let boxNumber = code.split('#')[1];
+                let boxCode = code.split('#')[1];
 
-                if(!id){
-                    Toast.fail("获取失败");
-                }else{
+
+                this.$api.isBoxUse({
+                    processId:id,
+                    boxCode,
+                }).then(res => {
                     this.$router.push({
                         path:'/logs',
                         query:{
                             id,
-                            boxNumber
+                            boxCode
                         }
                     })
-                }
+                }).catch(err => {
+                    Toast.fail(err)
+                })
+
+
+
+
+                // if(!id){
+                //     Toast.fail("获取失败");
+                // }else{
+                //
+                // }
 
             }
         },
